@@ -22,7 +22,9 @@ pathspec>=0.12.0          # .gitignore 规则匹配
 
 # ===== 语音 & OCR =====
 SpeechRecognition>=3.10.0 # 语音识别
-pyaudio>=0.2.14           # 音频录制
+# pyaudio 为可选依赖：多数环境没有预编译 wheel，需本机具备 PortAudio 才能编译。
+# 需要「按住说话」语音输入时再手动安装：pip install pyaudio
+# pyaudio>=0.2.14
 pytesseract>=0.3.10       # OCR（需系统装 Tesseract）
 Pillow>=10.0.0             # 图像处理
 

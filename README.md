@@ -1,7 +1,23 @@
 # CodeAgent - 只管代码的 AI Agent
 
+[![Build Windows App](https://github.com/wangzishi765/AI-Agent-/actions/workflows/build.yml/badge.svg)](https://github.com/wangzishi765/AI-Agent-/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/release/wangzishi765/AI-Agent-?display_name=tag)](https://github.com/wangzishi765/AI-Agent-/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 > 一个专注于代码全生命周期的 Windows 桌面 AI 助手：写代码、改代码、调试、解释、审查、修 Bug。
 > 界面为 DeepSeek / 豆包 风格的现代聊天应用（默认浅色，可切换深色主题），支持系统托盘常驻。
+
+## 🖼️ 界面预览
+
+**浅色主题（默认）**
+
+![欢迎页](docs/screenshots/welcome-light.png)
+
+![对话页 - 浅色](docs/screenshots/chat-light.png)
+
+**深色主题**（设置 → 主题 一键切换）
+
+![对话页 - 深色](docs/screenshots/chat-dark.png)
 
 ## ✨ 特性
 
@@ -41,6 +57,11 @@
 - SQLite 本地存储，对话历史可搜索、置顶、重命名
 - 自动更新检测（发现新版本可一键下载安装）
 - 开发者工具面板（操作日志、错误堆栈、日志导出）
+
+## ⬇️ 下载安装
+
+不想配置环境？直接到 **[Releases](https://github.com/wangzishi765/AI-Agent-/releases/latest)** 下载
+`CodeAgent-Setup-v1.0.0.exe`，双击安装即可（向导含中文/English/日本語/한국어，自带卸载程序）。
 
 ## 🚀 快速开始
 

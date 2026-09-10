@@ -1,0 +1,4 @@
+# 开发/构建依赖（仅打包与检查需要，运行时不需要）
+pyinstaller>=6.0
+pyflakes>=3.0
+autoflake>=2.0

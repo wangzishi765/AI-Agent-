@@ -4,7 +4,6 @@ import sys
 
 # 项目信息
 APP_NAME = "CodeAgent"
-APP_VERSION = "1.0.0"
 APP_DESCRIPTION = "只管代码的 AI Agent"
 
 # 目录（PyInstaller 打包后资源位于 _MEIPASS/resources）
@@ -16,6 +15,27 @@ else:
 RESOURCES_DIR = os.path.join(PROJECT_ROOT, "resources")
 STYLES_DIR = os.path.join(RESOURCES_DIR, "styles")
 ICONS_DIR = os.path.join(RESOURCES_DIR, "icons")
+
+
+def _read_version() -> str:
+    """版本号单一来源：仓库根目录 VERSION 文件（缺失时回退）"""
+    fallback = "1.0.0"
+    candidates = [
+        os.path.join(PROJECT_ROOT, "VERSION"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "VERSION"),
+    ]
+    for path in candidates:
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                value = f.read().strip()
+            if value:
+                return value
+        except OSError:
+            continue
+    return fallback
+
+
+APP_VERSION = _read_version()
 
 # 默认数据目录（用户目录下）
 DEFAULT_DATA_DIR = os.path.join(os.path.expanduser("~"), ".codeagent")

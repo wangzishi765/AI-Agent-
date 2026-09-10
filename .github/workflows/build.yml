@@ -32,13 +32,29 @@ jobs:
       - name: Lint (pyflakes)
         run: python -m pyflakes main.py app core models ui scripts tests
 
+      - name: Determine version
+        shell: pwsh
+        run: |
+          $fileVer = (Get-Content VERSION -Raw).Trim()
+          if ($env:GITHUB_REF -like 'refs/tags/v*') {
+            $tagVer = $env:GITHUB_REF_NAME.TrimStart('v')
+            if ($tagVer -ne $fileVer) {
+              throw "Tag v$tagVer 与 VERSION($fileVer) 不一致，请先更新 VERSION 文件再打 tag"
+            }
+            $v = $tagVer
+          } else {
+            $v = $fileVer
+          }
+          "APP_VERSION=$v" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "构建版本：$v"
+
       - name: Smoke import check
-        run: python -c "import app.config, app.database, app.theme, core.agent, models, ui.main_window; print('imports OK')"
+        run: python -c "import app.config, app.database, app.theme, core.agent, models, ui.main_window; print('imports OK', __import__('app.constants', fromlist=['APP_VERSION']).APP_VERSION)"
 
       - name: Build single-file exe
         run: |
           python -m PyInstaller --noconfirm --clean --windowed --onefile --name CodeAgent `
-            --icon "resources\icons\app.ico" --add-data "resources;resources" `
+            --icon "resources\icons\app.ico" --add-data "resources;resources" --add-data "VERSION;." `
             --hidden-import openai --hidden-import docker --hidden-import git `
             --hidden-import whoosh --hidden-import pathspec --hidden-import pytesseract `
             --hidden-import speech_recognition --hidden-import keyboard --hidden-import psutil `
@@ -50,7 +66,7 @@ jobs:
         run: choco install innosetup -y --no-progress
 
       - name: Build installer
-        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "scripts\build_installer.iss"'
+        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DMyAppVersion=$env:APP_VERSION "scripts\build_installer.iss"'
         shell: pwsh
 
       - name: Upload artifacts

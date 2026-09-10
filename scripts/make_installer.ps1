@@ -62,13 +62,17 @@ if (-not $iscc) {
 Write-Host "使用编译器: $iscc"
 
 Push-Location $Root
+$ver = '1.0.0'
+$verFile = Join-Path $Root 'VERSION'
+if (Test-Path $verFile) { $ver = (Get-Content $verFile -Raw).Trim() }
+Write-Host "构建版本: $ver"
 try {
-    & $iscc "scripts\build_installer.iss"
+    & $iscc "/DMyAppVersion=$ver" "scripts\build_installer.iss"
     if ($LASTEXITCODE -ne 0) { throw "ISCC 编译失败，退出码 $LASTEXITCODE" }
 } finally {
     Pop-Location
 }
-$out = Join-Path $Root 'dist\CodeAgent-Setup-v1.0.0.exe'
+$out = Join-Path $Root "dist\CodeAgent-Setup-v$ver.exe"
 if (Test-Path $out) {
     Write-Host ''
     Write-Host "✅ 安装包已生成：$out"

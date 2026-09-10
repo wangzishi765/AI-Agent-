@@ -284,4 +284,7 @@ TRANSLATIONS = {
 
     # ===== 浅色主题词条 =====
     '浅色': 'Light',
+
+    # ===== 更新检查词条 =====
+    '也可以手动下载安装包': 'You can also download the installer manually',
 }

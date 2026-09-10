@@ -47,6 +47,7 @@ class MainWindow(QMainWindow):
     model_changed = Signal(str)
     update_result = Signal(bool, bool, str, str)  # interactive, has_update, latest, info
     update_download_result = Signal(str)          # 安装包路径或空串
+    update_progress = Signal(int)                 # 下载进度百分比（工作线程 → GUI）
     editor_format_done = Signal(str)              # 编辑器格式化结果提示
     global_hotkey_triggered = Signal()            # keyboard 库线程 → 主线程
 
@@ -79,6 +80,7 @@ class MainWindow(QMainWindow):
         self._connect_signals()
         self.update_result.connect(self._on_update_result)
         self.update_download_result.connect(self._on_update_download_result)
+        self.update_progress.connect(self._on_update_progress)
 
         # 启动后检查更新
         if self.config.get("auto_check_update", True):
@@ -913,7 +915,7 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(6000, lambda: self.status_task.setText(""))
 
     def _download_and_install(self, version: str):
-        """后台下载安装包，成功后静默安装并退出"""
+        """后台下载安装包（带进度），成功后静默安装并退出"""
         self.status_task.setText(self.tr.tr("正在下载更新..."))
 
         def worker():
@@ -921,22 +923,46 @@ class MainWindow(QMainWindow):
             try:
                 from app.updater import Updater
                 updater = Updater(self.config)
-                path = updater.download_update(version) or ""
+                last_pct = {"v": -1}
+
+                def _cb(done: int, total: int):
+                    if not total:
+                        return
+                    pct = int(done * 100 / total)
+                    if pct != last_pct["v"]:
+                        last_pct["v"] = pct
+                        self.update_progress.emit(pct)
+
+                path = updater.download_update(version, callback=_cb) or ""
             except Exception:
                 path = ""
             self.update_download_result.emit(path)
 
         threading.Thread(target=worker, daemon=True).start()
 
+    def _on_update_progress(self, pct: int):
+        self.status_task.setText(f"{self.tr.tr('正在下载更新...')} {pct}%")
+
     def _on_update_download_result(self, path: str):
         if not path or not os.path.exists(path):
             self.status_task.setText(self.tr.tr("更新下载失败，请稍后重试"))
+            try:
+                from app.updater import Updater
+                page = Updater(self.config).get_release_page()
+            except Exception:
+                page = ""
+            QMessageBox.information(
+                self, APP_NAME,
+                f"{self.tr.tr('更新下载失败，请稍后重试')}\n\n{self.tr.tr('也可以手动下载安装包')}:\n{page}",
+            )
             return
         try:
             from app.updater import Updater
             if Updater(self.config).apply_update(path):
                 self._unregister_global_hotkey()
                 QTimer.singleShot(300, lambda: QApplication.instance() and QApplication.instance().quit())
+            else:
+                self.status_task.setText(self.tr.tr("更新下载失败，请稍后重试"))
         except Exception:
             self.status_task.setText(self.tr.tr("更新下载失败，请稍后重试"))
 

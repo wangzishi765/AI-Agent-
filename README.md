@@ -55,7 +55,7 @@
 - **系统托盘常驻**：关闭窗口收进托盘，单击 / 双击托盘图标恢复，右键菜单显示窗口 / 退出
 - 全局召唤热键（Ctrl+Alt+C，需 `keyboard` 库）
 - SQLite 本地存储，对话历史可搜索、置顶、重命名
-- 自动更新检测（发现新版本可一键下载安装）
+- 自动更新检测：读取本仓库的 GitHub Releases，发现新版本可一键下载并安装；也可在 Release 页手动下载
 - 开发者工具面板（操作日志、错误堆栈、日志导出）
 
 ## ⬇️ 下载安装
@@ -88,9 +88,10 @@ python main.py
 ## 📦 打包为独立 App 与安装包
 
 ```bash
+# 0) 发布新版本时先改根目录 VERSION 文件（版本号唯一来源，客户端更新检测也读它）
 # 1) 打包单文件 exe（免命令行，双击即用）
 python -m PyInstaller --noconfirm --clean --windowed --onefile --name CodeAgent ^
-  --icon "resources\icons\app.ico" --add-data "resources;resources" ^
+  --icon "resources\icons\app.ico" --add-data "resources;resources" --add-data "VERSION;." ^
   --hidden-import openai --hidden-import docker --hidden-import git ^
   --hidden-import whoosh --hidden-import pathspec --hidden-import pytesseract ^
   --hidden-import speech_recognition --hidden-import keyboard --hidden-import psutil ^
@@ -98,8 +99,8 @@ python -m PyInstaller --noconfirm --clean --windowed --onefile --name CodeAgent 
   --hidden-import aiosqlite main.py
 # 产物：dist\CodeAgent.exe
 
-# 2) 生成正式安装包（含卸载程序，需安装 Inno Setup 6）
-& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "scripts\build_installer.iss"
+# 2) 生成正式安装包（含卸载程序，需安装 Inno Setup 6；版本从 VERSION 传入）
+& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DMyAppVersion=1.0.0 "scripts\build_installer.iss"
 # 产物：dist\CodeAgent-Setup-v1.0.0.exe
 ```
 

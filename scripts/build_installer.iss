@@ -1,11 +1,13 @@
 ; CodeAgent Inno Setup 安装脚本（带卸载程序）
-; 版本: 1.0.0
-; 编译：ISCC.exe scripts\build_installer.iss
+; 版本来自仓库根目录 VERSION 文件，编译时通过 /DMyAppVersion=x.y.z 传入
+; 编译：ISCC.exe /DMyAppVersion=1.0.0 scripts\build_installer.iss
 
 #define MyAppName "CodeAgent"
-#define MyAppVersion "1.0.0"
+#ifndef MyAppVersion
+  #define MyAppVersion "1.0.0"
+#endif
 #define MyAppPublisher "CodeAgent"
-#define MyAppURL "https://github.com/CodeAgent/CodeAgent"
+#define MyAppURL "https://github.com/wangzishi765/AI-Agent-"
 #define MyAppExeName "CodeAgent.exe"
 
 [Setup]
@@ -45,6 +47,7 @@ Name: "autostart"; Description: "开机自动启动"; GroupDescription: "附加�
 
 [Files]
 Source: "..\dist\CodeAgent.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\VERSION"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\resources\*"; DestDir: "{app}\resources"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]

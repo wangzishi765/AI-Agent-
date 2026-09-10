@@ -1,0 +1,37 @@
+# ===== GUI 框架 =====
+PySide6>=6.6.0          # Qt for Python，桌面 GUI
+QScintilla>=2.14.0      # 代码编辑器组件（语法高亮、行号）
+
+# ===== AI 模型 =====
+openai>=1.10.0           # OpenAI 兼容客户端（DeepSeek + vLLM 通用）
+httpx>=0.26.0            # 异步 HTTP
+
+# ===== 代码执行 =====
+docker>=7.0.0            # Docker SDK，容器隔离运行代码
+
+# ===== Git 集成 =====
+GitPython>=3.1.40        # Git 操作
+
+# ===== 数据存储 =====
+SQLAlchemy>=2.0.0        # ORM
+aiosqlite>=0.19.0        # 异步 SQLite
+
+# ===== 搜索 =====
+whoosh>=2.7.4             # 全文检索（代码内容搜索）
+pathspec>=0.12.0          # .gitignore 规则匹配
+
+# ===== 语音 & OCR =====
+SpeechRecognition>=3.10.0 # 语音识别
+pyaudio>=0.2.14           # 音频录制
+pytesseract>=0.3.10       # OCR（需系统装 Tesseract）
+Pillow>=10.0.0             # 图像处理
+
+# ===== 工具 =====
+pyperclip>=1.8.2           # 剪贴板
+keyboard>=0.13.5            # 全局快捷键
+psutil>=5.9.0               # 系统进程监控
+python-dotenv>=1.0.0        # 环境变量
+markdown>=3.5               # Markdown 渲染
+pygments>=2.17              # 代码高亮
+requests>=2.31              # HTTP（更新检查等）
+packaging>=23.0             # 版本比较
